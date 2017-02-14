@@ -17,13 +17,13 @@ ECHO.
 ECHO ====================================================================================
 ECHO.
 SET /P nfile="Please Enter New File Name: "
-CLS
+SET /P kfile="Please Enter Key File Name: "
 SET /P alias="Alias Name: "
 GOTO CHECKKEY
 
 :CHECKKEY
-IF EXIST "%~dp0keys\%nfile%.keystore" GOTO ASKFORNEWKEY
-IF NOT EXIST "%~dp0keys\%nfile%.keystore" GOTO GENKEY
+IF EXIST "%~dp0keys\%kfile%.keystore" GOTO ASKFORNEWKEY
+IF NOT EXIST "%~dp0keys\%kfile%.keystore" GOTO GENKEY
 
 :ASKFORNEWKEY
 CLS
@@ -39,7 +39,7 @@ COLOR 0A
 
 :GENKEY
 CLS
-keytool -genkey -v -keystore "%~dp0keys\%nfile%.keystore" -alias %alias% -keyalg RSA -keysize 2048 -validity 999999
+keytool -genkey -v -keystore "%~dp0keys\%kfile%.keystore" -alias %alias% -keyalg RSA -keysize 2048 -validity 999999
 
 CLS
 ECHO.
@@ -50,10 +50,13 @@ IF %sign%==y GOTO SIGN
 IF %sign%==n GOTO EXIT
 
 :SIGN
-jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore "%~dp0keys\%nfile%.keystore" -signedjar "%~dp0signed-apk\%nfile%-unaligned.apk" %file% "%alias%"
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore "%~dp0keys\%kfile%.keystore" -signedjar "%~dp0signed-apk\%nfile%-unaligned.apk" %file% "%alias%"
 GOTO ALIGN
 
 :ALIGN
+CLS
+ECHO Now I'm going to align your apk file...
+PAUSE
 "%~dp0bin\zipalign.exe" -f -v 4 "%~dp0signed-apk\%nfile%-unaligned.apk" "%~dp0signed-apk\%nfile%.apk"
 
 CLS
@@ -78,7 +81,7 @@ CLS
 ECHO.
 ECHO You have to drag and drop your APK file to the batch file... Exiting!
 ECHO.
-GOTO EXIT
+GOTO EOF
 
 :EXIT
 ECHO All done!
