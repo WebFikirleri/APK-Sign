@@ -16,7 +16,9 @@ ECHO Let's begin to sign your APK
 ECHO.
 ECHO ====================================================================================
 ECHO.
-SET /P nfile="Please Enter New File Name: "
+ECHO Do not enter extensions for APK file name and Key file name...
+ECHO.
+SET /P nfile="Please Enter APK File Name: "
 SET /P kfile="Please Enter Key File Name: "
 SET /P alias="Alias Name: "
 GOTO CHECKKEY
@@ -35,6 +37,8 @@ ECHO If you do not use your exists keystore file, existing keystore file will be
 ECHO ====================================================================================
 ECHO.
 SET /P nkgen="Do you want to use exists keystore file? [y/n]"
+IF %nkgen%==y GOTO SIGN
+IF %nkgen%==n GOTO EXIT
 COLOR 0A
 
 :GENKEY
